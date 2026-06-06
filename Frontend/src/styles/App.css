@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Space+Grotesk:wght@400;500;600&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --pink: #FF4D8F;
+  --purple: #7C3AED;
+  --cyan: #00C6C6;
+  --yellow: #FFD600;
+  --ink: #160A28;
+  --muted: #7A6F8A;
+  --bg: #FDFCFA;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  /* single subtle accent, top-right */
+  background-image: radial-gradient(
+    ellipse 500px 500px at 95% -5%,
+    rgba(124, 58, 237, 0.08) 0%,
+    transparent 70%
+  );
+  background-attachment: fixed;
+}
+
+main {
+  width: 100%;
+}
+
+input,
+button {
+  font-family: inherit;
+}
