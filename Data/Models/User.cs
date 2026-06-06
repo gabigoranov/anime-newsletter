@@ -20,5 +20,7 @@ namespace AnimeNewsletter.Data.Models
         [Key]
         [EmailAddress]
         public string Email { get; set; }
+
+        public virtual List<Anime> Animes { get; set; } = new List<Anime>();
     }
 }

@@ -19,5 +19,7 @@ namespace AnimeNewsletter.Data.Models
         /// </summary>
         [Key]
         public int Id { get; set; }
+
+        public virtual List<User> Users { get; set; } = new List<User>();
     }
 }
