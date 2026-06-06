@@ -1,4 +1,5 @@
 using AnimeNewsletter.Data.Models;
+using AnimeNewsletter.Models;
 
 namespace AnimeNewsletter.Services.Interfaces
 {
@@ -37,5 +38,14 @@ namespace AnimeNewsletter.Services.Interfaces
         /// <param name="userEmail">The email address of the user.</param>
         /// <returns>The number of anime removed from the watchlist.</returns>
         Task<int> ClearWatchlistAsync(string userEmail);
+
+        /// <summary>
+        /// Updates the last notified episode for multiple users in bulk.
+        /// Called after notifications have been sent to users.
+        /// </summary>
+        /// <param name="notificationsByUser">Dictionary of user email to their anime episodes.</param>
+        /// <returns>The total number of records updated.</returns>
+        Task<int> UpdateLastNotifiedEpisodesInBulkAsync(
+            Dictionary<string, List<AnimeWithNewEpisode>> notificationsByUser);
     }
 }

@@ -24,6 +24,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<IUserAnimeService, UserAnimeService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<N8NService>();
 
 var app = builder.Build();

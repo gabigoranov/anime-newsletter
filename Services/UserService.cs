@@ -70,7 +70,7 @@ namespace AnimeNewsletter.Services
         public async Task<IEnumerable<UserAnime>> UpdateUserWatchlistAsync(string userEmail, string username)
         {
             string requestUrlTemplate = _configuration["ExternalServices:N8NLoadWatchlist"] ?? throw new Exception("Invalid External Service URL");
-            string requestUrl = string.Format(requestUrlTemplate, userEmail);
+            string requestUrl = string.Format(requestUrlTemplate, username);
             
             string body = await _n8NService.TriggerGet(requestUrl);
             Anime[]? currentWatchlist = JsonSerializer.Deserialize<Anime[]>(body, new JsonSerializerOptions

@@ -48,13 +48,12 @@ namespace AnimeNewsletter.Controllers
         /// <summary>
         /// Scans for new or updated anime entries.
         /// </summary>
-        /// <returns>A list of scanned anime entries.</returns>
         [HttpPost("scan")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Anime>>> Scan()
+        public async Task<ActionResult> Scan()
         {
-            var scannedAnime = await _animeService.ScanAnimeAsync();
-            return Ok(scannedAnime);
+            await _animeService.ScanAnimeAsync();
+            return Ok();
         }
     }
 }
