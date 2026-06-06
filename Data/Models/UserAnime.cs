@@ -15,6 +15,8 @@
         /// </summary>
         public int AnimeId { get; set; }
 
+        public int LastNotifiedEpisode { get; set; }
+
         /// <summary>
         /// Gets or sets the navigation property to the User.
         /// </summary>

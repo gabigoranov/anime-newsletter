@@ -13,12 +13,14 @@ namespace AnimeNewsletter.Services
         private readonly ApplicationDbContext _context;
         private readonly N8NService _n8NService;
         private readonly IUserAnimeService _userAnimeService;
+        private readonly IConfiguration _configuration;
 
-        public UserService(ApplicationDbContext context, N8NService n8NService, IUserAnimeService userAnimeService)
+        public UserService(ApplicationDbContext context, N8NService n8NService, IUserAnimeService userAnimeService, IConfiguration configuration)
         {
             _context = context;
             this._n8NService = n8NService;
             _userAnimeService = userAnimeService;
+            _configuration = configuration;
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
@@ -67,7 +69,10 @@ namespace AnimeNewsletter.Services
         /// </summary>
         public async Task<IEnumerable<UserAnime>> UpdateUserWatchlistAsync(string userEmail, string username)
         {
-            string body = await _n8NService.TriggerGet($"webhook-test/user/watchlist?username={username}");
+            string requestUrlTemplate = _configuration["ExternalServices:N8NLoadWatchlist"] ?? throw new Exception("Invalid External Service URL");
+            string requestUrl = string.Format(requestUrlTemplate, userEmail);
+            
+            string body = await _n8NService.TriggerGet(requestUrl);
             Anime[]? currentWatchlist = JsonSerializer.Deserialize<Anime[]>(body, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true

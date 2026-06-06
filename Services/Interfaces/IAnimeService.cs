@@ -22,8 +22,8 @@ namespace AnimeNewsletter.Services.Interfaces
 
         /// <summary>
         /// Scans and updates the anime database with new entries.
+        /// Later filters and groups everything and orchestrates sending news
         /// </summary>
-        /// <returns>A collection of newly scanned or updated anime.</returns>
-        Task<IEnumerable<Anime>> ScanAnimeAsync();
+        Task ScanAnimeAsync();
     }
 }
