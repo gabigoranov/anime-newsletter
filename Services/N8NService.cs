@@ -30,5 +30,22 @@ namespace AnimeNewsletter.Services
 
             throw new Exception($"Failed to trigger n8n workflow. Status Code: {response.StatusCode}, Reason: {response.ReasonPhrase}");
         }
+
+        public async Task<string> TriggerPost<T>(T payload, string urlToSend)
+        {
+            string n8nWebhookUrl = $"{_config["ExternalServices:N8NServerUrl"]}{urlToSend}";
+
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(n8nWebhookUrl, payload);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Extract the raw JSON string directly from the response content
+                string rawJsonContent = await response.Content.ReadAsStringAsync();
+
+                return rawJsonContent;
+            }
+
+            throw new Exception($"Failed to trigger n8n workflow. Status Code: {response.StatusCode}, Reason: {response.ReasonPhrase}");
+        }
     }
 }

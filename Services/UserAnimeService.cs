@@ -1,5 +1,6 @@
 using AnimeNewsletter.Data;
 using AnimeNewsletter.Data.Models;
+using AnimeNewsletter.Models;
 using AnimeNewsletter.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
@@ -130,6 +131,52 @@ namespace AnimeNewsletter.Services
             await _context.SaveChangesAsync();
 
             return userAnimes.Count;
+        }
+
+        /// <summary>
+        /// Updates the last notified episode for multiple users in bulk.
+        /// Called after notifications have been sent to users.
+        /// </summary>
+        public async Task<int> UpdateLastNotifiedEpisodesInBulkAsync(
+            Dictionary<string, List<AnimeWithNewEpisode>> notificationsByUser)
+        {
+            if (notificationsByUser == null || notificationsByUser.Count == 0)
+            {
+                return 0;
+            }
+
+            int totalUpdated = 0;
+
+            // Get all unique anime IDs and user emails involved
+            var allAnimeIds = notificationsByUser
+                .Values
+                .SelectMany(animes => animes.Select(a => a.Id))
+                .Distinct()
+                .ToList();
+
+            var userEmails = notificationsByUser.Keys.ToList();
+
+            // Fetch all relevant UserAnime records in one query
+            var userAnimes = await _context.UserAnime
+                .Where(ua => userEmails.Contains(ua.UserEmail) && allAnimeIds.Contains(ua.AnimeId))
+                .ToListAsync();
+
+            // Update each record's last notified episode
+            foreach (var userAnime in userAnimes)
+            {
+                if (notificationsByUser.TryGetValue(userAnime.UserEmail, out var userAnimeList))
+                {
+                    var latestEpisode = userAnimeList.FirstOrDefault(a => a.Id == userAnime.AnimeId);
+                    if (latestEpisode != null)
+                    {
+                        userAnime.LastNotifiedEpisode = latestEpisode.Episode;
+                        totalUpdated++;
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return totalUpdated;
         }
     }
 }
