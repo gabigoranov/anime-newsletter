@@ -1,22 +1,24 @@
 using AnimeNewsletter.Data;
 using AnimeNewsletter.Data.Models;
-using AnimeNewsletter.Services.Dtos;
 using AnimeNewsletter.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Web;
 
 namespace AnimeNewsletter.Services
 {
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
-        private readonly HttpClient _httpClient;
+        private readonly N8NService _n8NService;
+        private readonly IUserAnimeService _userAnimeService;
 
-        public UserService(ApplicationDbContext context, HttpClient httpClient)
+        public UserService(ApplicationDbContext context, N8NService n8NService, IUserAnimeService userAnimeService)
         {
             _context = context;
-            _httpClient = httpClient;
+            this._n8NService = n8NService;
+            _userAnimeService = userAnimeService;
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
@@ -65,19 +67,24 @@ namespace AnimeNewsletter.Services
         /// </summary>
         public async Task<IEnumerable<UserAnime>> UpdateUserWatchlistAsync(string userEmail, string username)
         {
-            await TriggerN8NGet($"webhook/user/watchlist?username={username}");
+            string body = await _n8NService.TriggerGet($"webhook-test/user/watchlist?username={username}");
+            Anime[]? currentWatchlist = JsonSerializer.Deserialize<Anime[]>(body, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            // Clear in all cases
+            await _userAnimeService.ClearWatchlistAsync(userEmail);
+
+            if (currentWatchlist != null && currentWatchlist.Length != 0)
+            {
+                // If the watchlist isnt empty - add all the currently watching
+                return await _userAnimeService.AddAnimeInBulkAsync(userEmail, currentWatchlist);
+            }
+
+            return Enumerable.Empty<UserAnime>();
         }
 
-        private async Task<HttpRequestMessage> TriggerN8NGet(string urlToSend)
-        {
-            // Crucial: Encode the target URL so characters like '?', '&', and '/' don't break the request
-            string encodedUrl = HttpUtility.UrlEncode(urlToSend);
-
-            string n8nWebhookUrl = $"{Constants.SERVER_URL}{encodedUrl}";
-
-            HttpResponseMessage response = await _httpClient.GetAsync(n8nWebhookUrl);
-
-            return response;
-        }
+       
     }
-}
+}   
