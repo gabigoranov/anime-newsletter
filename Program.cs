@@ -21,8 +21,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddHttpClient();
 
 // Register Services
+builder.Services.AddScoped<IUserAnimeService, UserAnimeService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
+builder.Services.AddScoped<N8NService>();
 
 var app = builder.Build();
 
