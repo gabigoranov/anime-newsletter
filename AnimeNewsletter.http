@@ -1,0 +1,6 @@
+@AnimeNewsletter_HostAddress = http://localhost:5032
+
+GET {{AnimeNewsletter_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
