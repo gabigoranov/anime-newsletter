@@ -2,6 +2,7 @@ using AnimeNewsletter.Data;
 using AnimeNewsletter.Data.Models;
 using AnimeNewsletter.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace AnimeNewsletter.Services
 {
@@ -29,8 +30,13 @@ namespace AnimeNewsletter.Services
                 _context.Anime.Add(anime);
                 existingAnime = anime;
             }
+        }
 
-            
+        private async Task<UserAnime?> CreateUserAnimeAsync(string userEmail, Anime anime)
+        {
+            // Check if the UserAnime entry already exists
+            var existingUserAnime = await _context.UserAnime
+                .FirstOrDefaultAsync(ua => ua.UserEmail == userEmail && ua.AnimeId == anime.Id);
 
             if (existingUserAnime == null)
             {
@@ -41,8 +47,10 @@ namespace AnimeNewsletter.Services
                 };
 
                 _context.UserAnime.Add(userAnime);
-                userAnimeList.Add(userAnime);
+                return userAnime;
             }
+
+            return null;
         }
 
         /// <summary>
@@ -64,9 +72,10 @@ namespace AnimeNewsletter.Services
             foreach (var anime in animeList)
             {
                 await AddAnimeAsync(anime);
-                // Check if the UserAnime entry already exists
-                var existingUserAnime = await _context.UserAnime
-                    .FirstOrDefaultAsync(ua => ua.UserEmail == userEmail && ua.AnimeId == animes.Id);
+
+                UserAnime? newUserAnimeConnection = await CreateUserAnimeAsync(userEmail, anime);
+                if (newUserAnimeConnection != null)
+                    userAnimeList.Add(newUserAnimeConnection);
 
             }
 
