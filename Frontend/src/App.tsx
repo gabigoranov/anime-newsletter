@@ -1,12 +1,10 @@
-import Hero from './components/landing/Hero'
-import './styles/App.css'
+import Landing from "./pages/Landing";
+import { ModalProvider } from "./providers/ModalProvider";
 
-function App() {
+export default function App() {
   return (
-    <main>
-      <Hero />
-    </main>
-  )
+    <ModalProvider>
+      <Landing />
+    </ModalProvider>
+  );
 }
-
-export default App

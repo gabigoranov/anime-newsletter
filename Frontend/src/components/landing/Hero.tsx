@@ -1,106 +1,92 @@
-import { useState } from 'react'
-import styles from '../../styles/Hero.module.css'
+import { LucideMailCheck, LucideSendHorizontal } from "lucide-react";
+import { useModal } from "../../hooks/useModal";
+import { useState } from "react";
 
 export default function Hero() {
-  const [mal, setMal] = useState('')
-  const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-  const [errors, setErrors] = useState({ mal: false, email: false })
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    const errs = {
-      mal: !mal.trim(),
-      email: !email.trim() || !email.includes('@'),
-    }
-    setErrors(errs)
-    if (errs.mal || errs.email) return
-    setSubmitted(true)
-  }
+  const { openSignup } = useModal();
+  const [email, setEmail] = useState<string>();
+  const isValidEmail = (value: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  };
 
   return (
-    <section className={styles.hero}>
-      <div className={styles.left}>
-        <h1 className={styles.heading}>
-          Your anime watchlist,<br />
-          <span className={styles.accent}>curated</span> for you
-        </h1>
-        <p className={styles.sub}>
-          Connect your MyAnimeList account and get a weekly digest of picks,
-          hidden gems, and airing shows matched to your taste.
-        </p>
-        <ul className={styles.perks}>
-          <li>Trending picks filtered to your genres</li>
-          <li>Hidden gems you'd never find scrolling</li>
-          <li>One personalised recommendation every week</li>
-        </ul>
-      </div>
+    <section className="relative max-w-7xl mx-auto py-xl lg:py-3xl w-full">
+      <div className="section-container flex flex-col-reverse md:flex-row items-center gap-xl">
+        {/* Left Content Column */}
+        <div className="flex-1 flex flex-col gap-md z-10 text-center md:text-left">
+          <h1 className="font-display text-display text-on-surface leading-tight">
+            Never Miss an <br className="hidden lg:block" />
+            <span className="text-primary relative inline-block">
+              Anime Update
+              {/* SVG Underline Highlight */}
+              <svg
+                className="absolute w-full h-3 -bottom-1 left-0 text-primary-container"
+                preserveAspectRatio="none"
+                viewBox="0 0 100 10"
+              >
+                <path
+                  d="M0 5 Q 50 10 100 5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></path>
+              </svg>
+            </span>{" "}
+            Again.
+          </h1>
 
-      <div className={styles.right}>
-        {submitted ? (
-          <div className={styles.success} role="alert">
-            <span className={styles.successIcon} aria-hidden="true">✓</span>
-            <h2>You're in</h2>
-            <p>Your first digest lands next Friday. We're already reading your MAL list.</p>
-            <p className={styles.spamNote}>
-              Add <strong>hello@otakudrop.email</strong> to your contacts so we don't end up in spam.
-            </p>
-          </div>
-        ) : (
-          <form className={styles.form} onSubmit={handleSubmit} noValidate>
-            <div className={styles.formHeader}>
-              <h2>Get the weekly drop</h2>
-              <p>Free, every Friday.</p>
-            </div>  
+          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-6/7 mx-auto md:mx-0">
+            Never miss an episode. Sync your MyAnimeList account and receive
+            hourly updates, breaking anime news, release alerts, and AI-powered
+            summaries—all for free.
+          </p>
 
-            <div className={styles.field}>
-              <label htmlFor="mal">MAL username</label>
+          <form
+            className="flex flex-col sm:flex-row gap-sm mt-sm w-full max-w-md mx-auto md:mx-0"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <div className="relative flex-1">
+              <LucideMailCheck className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-outline" />
               <input
-                id="mal"
-                type="text"
-                value={mal}
-                onChange={e => setMal(e.target.value)}
-                placeholder="nakamura_san"
-                className={errors.mal ? styles.inputError : ''}
-                autoComplete="off"
-                aria-invalid={errors.mal}
-                aria-describedby={errors.mal ? "mal-error" : undefined}
-              />
-              {errors.mal && (
-                <span id="mal-error" className={styles.error}>
-                  Please enter your MAL username
-                </span>
-              )}
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="email">Email address</label>
-              <input
-                id="email"
+                className="pl-lg pr-md py-sm rounded-full border-2 border-outline-variant bg-surface text-on-surface font-body-md focus:border-secondary focus:ring-4 focus:ring-secondary/10 transition-all outline-none placeholder:text-outline"
+                placeholder="Enter your email"
+                required
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className={errors.email ? styles.inputError : ''}
-                autoComplete="email"
-                aria-invalid={errors.email}
-                aria-describedby={errors.email ? "email-error" : undefined}
+                onChange={(e) => setEmail(e.target.value)}
               />
-              {errors.email && (
-                <span id="email-error" className={styles.error}>
-                  Please enter a valid email
-                </span>
-              )}
             </div>
+            <button
+              className="bg-primary text-on-primary px-lg py-sm rounded-full font-label-md text-label-md hover:scale-105 hover:bg-surface-tint active:scale-95 transition-all shadow-lg shadow-primary/25 whitespace-nowrap flex items-center justify-center gap-sm"
+              type="submit"
+              onClick={() => {
+                const trimmed = email?.trim();
 
-            <button type="submit" className={styles.btn}>Subscribe</button>
+                if (!isValidEmail(trimmed || "")) {
+                  return;
+                }
 
-            <p className={styles.disclaimer}>
-              Every email includes a one-click unsubscribe. No spam, no data selling.
-            </p>
+                openSignup(trimmed);
+              }}
+            >
+              Join Waitlist <LucideSendHorizontal className="text-on-primary" />
+            </button>
           </form>
-        )}
+        </div>
+
+        {/* Right Graphic Column */}
+        <div className="flex-1 relative z-10 w-full flex justify-center perspective-1000">
+          <div className="relative w-full max-w-125">
+            {/* Subtle image glow effect */}
+            <div className="absolute inset-0 bg-linear-to-tr from-primary-fixed to-secondary-fixed rounded-full blur-3xl opacity-20 -z-10"></div>
+            <img
+              alt="AniMail Robot Mascot Flying"
+              className="w-full h-auto object-contain drop-shadow-2xl"
+              src="https://lh3.googleusercontent.com/aida/AP1WRLuAFhfZSL5xD9PvwFjuI0mntOz1ihVBhIOxVCyPQFNMs5_WUW_zA_P2J_u38L6wA9DLFTZl-TvpvNeLd90Ys4tVt0pvdlHWbGYbFzmhTgdDqKv5_W5Su08z6QUgw9Ex5eMPXm617mWBC5YWz1dU7Qe_JKIREwhSfFn-X56l4o_snbJhCv1B4y8VtFD-FUpKrIWGMg2dA9eimNj1ElmfEIr6yEsVOq9GofzIhG_Iu-eop-wYI8G-BVemJKc"
+            />
+          </div>
+        </div>
       </div>
     </section>
-  )
+  );
 }
