@@ -1,6 +1,8 @@
-import React from "react";
+import { useModal } from "../../hooks/useModal";
 
-export const CtaBanner: React.FC = () => {
+export default function CtaBanner() {
+  const { openSignup } = useModal();
+
   return (
     <div className="relative w-full overflow-hidden rounded-3xl border border-outline-variant bg-surface-container-low p-8 md:p-12 text-left shadow-xl">
       {/* Background Soft Linear Overlay */}
@@ -18,7 +20,10 @@ export const CtaBanner: React.FC = () => {
             delayed feeds, no missed episodes.
           </p>
           <div className="pt-2">
-            <button className="hidden md:block bg-primary text-on-primary font-semibold text-label-md px-gutter py-sm rounded-full hover:scale-105 active:scale-95 transition-all shadow-md shadow-primary/20 duration-200">
+            <button
+              className="hidden md:block bg-primary text-on-primary font-semibold text-label-md px-gutter py-sm rounded-full hover:scale-105 active:scale-95 transition-all shadow-md shadow-primary/20 duration-200"
+              onClick={() => openSignup()}
+            >
               Get Started
             </button>
           </div>
@@ -38,6 +43,4 @@ export const CtaBanner: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default CtaBanner;
+}
