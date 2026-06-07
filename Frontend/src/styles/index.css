@@ -2,46 +2,50 @@
 
 @theme {
   /* AniMail Color Palette Integration */
+  /* Primary: Kept your bold, earthy red-orange */
   --color-primary: #ac332a;
-  --color-primary-container: #ff6f61;
+  --color-primary-container: #ffdad5; 
   --color-primary-fixed: #ffdad5;
   --color-primary-fixed-dim: #ffb4aa;
   --color-on-primary: #ffffff;
-  --color-on-primary-container: #6f0205;
+  --color-on-primary-container: #410001;
   
-  --color-secondary: #00696b;
-  --color-secondary-container: #56f5f8;
-  --color-secondary-fixed: #5af8fb;
-  --color-secondary-fixed-dim: #2ddbde;
+  /* Secondary: Swapped jarring cyan for a sophisticated Warm Taupe */
+  --color-secondary: #775652;
+  --color-secondary-container: #ffdad4;
+  --color-secondary-fixed: #ffdad4;
+  --color-secondary-fixed-dim: #e7c8c3;
   --color-on-secondary: #ffffff;
-  --color-on-secondary-container: #006e70;
+  --color-on-secondary-container: #2c1512;
 
-  --color-tertiary: #705d00;
-  --color-tertiary-container: #b89b00;
-  --color-tertiary-fixed: #ffe16d;
-  --color-tertiary-fixed-dim: #e9c400;
+  /* Tertiary: A muted, earthy olive-gold to complement the primary */
+  --color-tertiary: #715c2e;
+  --color-tertiary-container: #fde0a6;
+  --color-tertiary-fixed: #fde0a6;
+  --color-tertiary-fixed-dim: #dfc48c;
   --color-on-tertiary: #ffffff;
-  --color-on-tertiary-container: #3f3400;
+  --color-on-tertiary-container: #261a00;
 
-  --color-background: #fbf8ff;
-  --color-on-background: #161a32;
+  /* Backgrounds & Surfaces: Removed the purple tint, warmed up for harmony */
+  --color-background: #fff8f6;
+  --color-on-background: #231918;
   
-  --color-surface: #fbf8ff;
-  --color-surface-dim: #d5d8f9;
-  --color-surface-bright: #fbf8ff;
-  --color-surface-variant: #dee0ff;
-  --color-surface-container: #ececff;
-  --color-surface-container-low: #f4f2ff;
-  --color-surface-container-high: #e5e6ff;
-  --color-surface-container-highest: #dee0ff;
+  --color-surface: #fff8f6;
+  --color-surface-dim: #e4d7d5;
+  --color-surface-bright: #fff8f6;
+  --color-surface-variant: #f4dfdb;
+  --color-surface-container: #fceae7;
+  --color-surface-container-low: #fff1ee;
+  --color-surface-container-high: #f7e4e1;
+  --color-surface-container-highest: #f1dedb;
   
-  --color-inverse-surface: #2b2f48;
-  --color-inverse-on-surface: #f0efff;
-  --color-on-surface: #161a32;
-  --color-on-surface-variant: #58413e;
+  --color-inverse-surface: #382e2c;
+  --color-inverse-on-surface: #ffedea;
+  --color-on-surface: #231918;
+  --color-on-surface-variant: #534341;
   
-  --color-outline: #8c716d;
-  --color-outline-variant: #e0bfbb;
+  --color-outline: #857370;
+  --color-outline-variant: #d8c2be;
 
   /* AniMail Typography System */
   --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -68,19 +72,19 @@
 
 :root {
   /* Mapped Native Variables (Light Mode Only) */
-  --bg: #fbf8ff;
-  --text: #58413e;
-  --text-h: #161a32;
-  --border: #e0bfbb;
-  --code-bg: #ececff;
-  --accent: #ac332a;
+  --bg: var(--color-background);
+  --text: var(--color-on-surface-variant);
+  --text-h: var(--color-on-surface);
+  --border: var(--color-outline-variant);
+  --code-bg: var(--color-surface-container);
+  --accent: var(--color-primary);
   --accent-bg: rgba(172, 51, 42, 0.1);
   --accent-border: rgba(172, 51, 42, 0.4);
-  --social-bg: rgba(236, 236, 255, 0.5);
-  --shadow: rgba(22, 26, 50, 0.08) 0 10px 15px -3px, rgba(22, 26, 50, 0.04) 0 4px 6px -2px;
+  --social-bg: rgba(244, 223, 219, 0.5); /* Warmed up to match new surfaces */
+  --shadow: rgba(35, 25, 24, 0.08) 0 10px 15px -3px, rgba(35, 25, 24, 0.04) 0 4px 6px -2px; /* Tinted shadow to match text */
 
-  --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --heading: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --sans: var(--font-body-md);
+  --heading: var(--font-headline-md);
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
