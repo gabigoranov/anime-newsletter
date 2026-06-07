@@ -1,12 +1,13 @@
-import Hero from './components/landing/Hero'
-import './styles/App.css'
+import Hero from "./components/landing/Hero";
+import Navbar from "./components/landing/Navbar";
 
-function App() {
+export default function App() {
   return (
-    <main>
-      <Hero />
-    </main>
-  )
+    <div className="bg-background text-on-background min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container font-body-md">
+      <Navbar />
+      <main className="grow">
+        <Hero />
+      </main>
+    </div>
+  );
 }
-
-export default App

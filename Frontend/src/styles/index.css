@@ -1,23 +1,91 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import "tailwindcss";
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+@theme {
+  /* AniMail Color Palette Integration */
+  --color-primary: #ac332a;
+  --color-primary-container: #ff6f61;
+  --color-primary-fixed: #ffdad5;
+  --color-primary-fixed-dim: #ffb4aa;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #6f0205;
+  
+  --color-secondary: #00696b;
+  --color-secondary-container: #56f5f8;
+  --color-secondary-fixed: #5af8fb;
+  --color-secondary-fixed-dim: #2ddbde;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #006e70;
+
+  --color-tertiary: #705d00;
+  --color-tertiary-container: #b89b00;
+  --color-tertiary-fixed: #ffe16d;
+  --color-tertiary-fixed-dim: #e9c400;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #3f3400;
+
+  --color-background: #fbf8ff;
+  --color-on-background: #161a32;
+  
+  --color-surface: #fbf8ff;
+  --color-surface-dim: #d5d8f9;
+  --color-surface-bright: #fbf8ff;
+  --color-surface-variant: #dee0ff;
+  --color-surface-container: #ececff;
+  --color-surface-container-low: #f4f2ff;
+  --color-surface-container-high: #e5e6ff;
+  --color-surface-container-highest: #dee0ff;
+  
+  --color-inverse-surface: #2b2f48;
+  --color-inverse-on-surface: #f0efff;
+  --color-on-surface: #161a32;
+  --color-on-surface-variant: #58413e;
+  
+  --color-outline: #8c716d;
+  --color-outline-variant: #e0bfbb;
+
+  /* AniMail Typography System */
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-headline-lg: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-headline-md: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body-lg: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body-md: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-label-md: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-label-sm: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* AniMail Custom Spacing Tokens */
+  --spacing-xs: 4px;
+  --spacing-sm: 12px;
+  --spacing-base: 8px;
+  --spacing-md: 24px;
+  --spacing-gutter: 24px;
+  --spacing-lg: 48px;
+  --spacing-xl: 80px;
+  --spacing-2xl: 112px;
+  --spacing-3xl: 160px;
+  --spacing-margin-mobile: 16px;
+  --spacing-margin-desktop: 64px;
+}
+
+:root {
+  /* Mapped Native Variables (Light Mode Only) */
+  --bg: #fbf8ff;
+  --text: #58413e;
+  --text-h: #161a32;
+  --border: #e0bfbb;
+  --code-bg: #ececff;
+  --accent: #ac332a;
+  --accent-bg: rgba(172, 51, 42, 0.1);
+  --accent-border: rgba(172, 51, 42, 0.4);
+  --social-bg: rgba(236, 236, 255, 0.5);
+  --shadow: rgba(22, 26, 50, 0.08) 0 10px 15px -3px, rgba(22, 26, 50, 0.04) 0 4px 6px -2px;
+
+  --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --heading: 'Plus Jakarta Sans', system-ui, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
+  letter-spacing: -0.01em;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -30,28 +98,7 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
 #root {
-  width: 1126px;
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -64,48 +111,65 @@
 
 body {
   margin: 0;
+  background-color: var(--bg);
 }
 
 h1,
 h2 {
   font-family: var(--heading);
-  font-weight: 500;
   color: var(--text-h);
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
+  font-size: 48px;
+  line-height: 56px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   margin: 32px 0;
+  
   @media (max-width: 1024px) {
-    font-size: 36px;
+    font-size: 28px;
+    line-height: 36px;
+    font-weight: 700;
     margin: 20px 0;
   }
 }
+
 h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   margin: 0 0 8px;
+  
   @media (max-width: 1024px) {
-    font-size: 20px;
+    font-size: 24px;
+    line-height: 32px;
   }
 }
+
 p {
   margin: 0;
 }
 
-code,
-.counter {
+code {
   font-family: var(--mono);
   display: inline-flex;
   border-radius: 4px;
   color: var(--text-h);
-}
-
-code {
   font-size: 15px;
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+@utility section-container {
+  max-width: 1440px;
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--spacing-margin-mobile); 
+  
+  @media (min-width: 768px) {
+    padding-inline: var(--spacing-margin-desktop);
+  }
 }
