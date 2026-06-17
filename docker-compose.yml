@@ -2,7 +2,27 @@ networks:
   web_network:
     external: false
 
+volumes:
+  jenkins_data: # Define the volume for persistent data
+
 services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins
+    environment:
+      - JENKINS_OPTS=--prefix=/jenkins
+    restart: always
+    privileged: true
+    user: root
+    # Nginx will communicate via the internal docker network.
+    ports:
+      - "50000:50000"  #for Jenkins agents
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+    networks:
+      - web_network # Linked to the same network as Nginx
   nginx:
     image: nginx:latest
     container_name: nginx_proxy
