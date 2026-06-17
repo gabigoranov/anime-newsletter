@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                // This pulls your latest Git commit onto the VPS workspace
                 checkout scm
             }
         }
@@ -12,10 +11,10 @@ pipeline {
         stage('Deploy to Docker') {
             steps {
                 script {
-                    echo "Stopping old containers, rebuilding, and starting new ones..."
+                    echo "Deploying only application containers..."
                     
-                    // Jenkins leverages the mounted docker.sock to run this on your host VPS
-                    sh "docker compose up -d --build"
+                    // TARGET SPECIFIC SERVICES: This prevents Jenkins from trying to recreate itself!
+                    sh "docker compose up -d --build backend frontend"
                 }
             }
         }
@@ -23,19 +22,10 @@ pipeline {
         stage('Housekeeping') {
             steps {
                 script {
-                    echo "Cleaning up dangling images to save space on Contabo..."
+                    echo "Cleaning up dangling images..."
                     sh "docker image prune -f"
                 }
             }
-        }
-    }
-    
-    post {
-        success {
-            echo "Pipeline completed successfully! Your site is updated."
-        }
-        failure {
-            echo "Something went wrong during the build."
         }
     }
 }
