@@ -34,9 +34,13 @@ pipeline {
         stage('Deploy to Docker') {
             steps {
                 script {
-                    echo "Deploying only application containers..."
-                    // Added --force-recreate to guarantee your new UI layers are applied
-                    sh "docker compose up -d --force-recreate --build backend frontend"
+                    echo "Stopping old containers..."
+                    // -v wipes out any old anonymous volumes holding cached static assets
+                    sh "docker compose down -v"
+
+                    echo "Deploying and forcing a total fresh build..."
+                    // --no-cache forces Docker to completely re-download/re-compile everything line-by-line
+                    sh "docker compose up -d --build --no-cache backend frontend"
                 }
             }
         }
