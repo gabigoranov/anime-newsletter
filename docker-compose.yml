@@ -2,7 +2,7 @@ services:
   # Our Backend Box
   backend:
     build:
-      context: ./Backend # Tells Docker where to find the backend Dockerfile
+      context: ./backend # Tells Docker where to find the backend Dockerfile
     ports:
       - "8080:8080" # Opens a door so your computer can reach the backend ( the https port from the backend launchSettings.json )
     environment:
@@ -12,11 +12,11 @@ services:
   # Our Frontend Box
   frontend:
     build:
-      context: ./Frontend # Tells Docker where to find the frontend Dockerfile
+      context: ./frontend # Tells Docker where to find the frontend Dockerfile
     ports:
       - "5173:5173" # Maps the frontend's window to port 5173 on your computer
     volumes:
-      - ./Frontend:/app
+      - ./frontend:/app
       - /app/node_modules # This keeps the heavy Node tools safely inside the box so they don't clutter your computer.
     depends_on:
       - backend # Tells the frontend to wait nicely for the backend to wake up first
