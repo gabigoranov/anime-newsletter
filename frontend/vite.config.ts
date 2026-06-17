@@ -10,4 +10,11 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss()
   ],
+  server: {
+    host: true, // This allows internal docker routing
+    port: 5173,
+    allowedHosts: [
+      'vmi3331038.contaboserver.net' // allow our contabo server
+    ]
+  }
 })
