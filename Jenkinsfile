@@ -10,8 +10,10 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh "docker compose -f /var/www/anime-newsletter/docker-compose.yml -p anime-newsletter build --no-cache frontend backend"
-                sh "docker compose -f /var/www/anime-newsletter/docker-compose.yml -p anime-newsletter up -d --force-recreate frontend backend"
+                // By omitting -f or using the workspace copy, Jenkins reads its fresh checkout
+                // While -p anime-newsletter forces it to overwrite your exact running production stack!
+                sh "docker compose -p anime-newsletter build --no-cache frontend backend"
+                sh "docker compose -p anime-newsletter up -d --force-recreate frontend backend"
             }
         }
     }
