@@ -46,7 +46,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - DOTNET_WATCH_SUPPRESS_LAUNCH_BROWSER=true  
     networks:
-      - web_network
+      web_network:
+        aliases:
+          - backend
       
   # Our Frontend Box
   frontend:
@@ -58,4 +60,6 @@ services:
     depends_on:
       - backend # Tells the frontend to wait nicely for the backend to wake up first
     networks:
-      - web_network
+      web_network:
+        aliases:
+          - frontend
