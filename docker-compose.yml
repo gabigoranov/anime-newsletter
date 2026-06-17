@@ -6,6 +6,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx_proxy
+    restart: always
     ports:
       - "80:80"
       - "443:443"
