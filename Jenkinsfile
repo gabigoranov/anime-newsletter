@@ -34,20 +34,22 @@ pipeline {
         stage('Deploy to Docker') {
             steps {
                 script {
-                    // Navigate to your true deployment home directory
+                    echo "1. Copying fresh code from Jenkins workspace into production directory..."
+                    // This syncs the fresh repository files straight into your active host folder
+                    sh "cp -R ${WORKSPACE}/backend/. /var/www/anime-newsletter/backend/"
+                    sh "cp -R ${WORKSPACE}/frontend/. /var/www/anime-newsletter/frontend/"
+                    sh "cp ${WORKSPACE}/docker-compose.yml /var/www/anime-newsletter/docker-compose.yml"
+
+                    // 2. Change directory straight into your production folder
                     dir('/var/www/anime-newsletter') {
                         
-                        echo "Pulling latest code changes into the deployment directory..."
-                        sh "git pull origin main"
-
-                        echo "Stopping the existing production containers to wipe data caches..."
+                        echo "2. Stopping existing frontend & backend containers and wiping old volumes..."
                         sh "docker compose down -v"
 
-                        echo "Building fresh images directly on the production stack..."
-                        // We target the real production stack to ensure consistency
+                        echo "3. Building fresh production images from the newly copied code..."
                         sh "docker compose build --no-cache backend frontend"
 
-                        echo "Launching the updated application containers..."
+                        echo "4. Booting your containers back up under Nginx..."
                         sh "docker compose up -d backend frontend"
                     }
                 }
