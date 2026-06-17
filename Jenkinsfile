@@ -4,8 +4,11 @@ pipeline {
     stages {
         stage('Notify GitHub Start') {
             steps {
-                // Uses the universal commit status setter
-                githubNotify context: 'Continuous Integration', description: 'Jenkins is building your app...', status: 'PENDING'
+                // Native Jenkins GitHub status setter
+                step([$class: 'GitHubCommitStatusSetter', 
+                    contextSource: [$class: 'ManuallyEnteredCommitStatusContextSource', context: 'Continuous Integration'],
+                    statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Jenkins is building your app...', state: 'PENDING']]]
+                ])
             }
         }
 
@@ -19,8 +22,6 @@ pipeline {
             steps {
                 script {
                     echo "Deploying only application containers..."
-                    
-                    // TARGET SPECIFIC SERVICES: This prevents Jenkins from trying to recreate itself!
                     sh "docker compose up -d --build backend frontend"
                 }
             }
@@ -38,10 +39,16 @@ pipeline {
 
     post {
         success {
-            githubNotify context: 'Continuous Integration', description: 'Build and deploy succeeded!', status: 'SUCCESS'
+            step([$class: 'GitHubCommitStatusSetter', 
+                contextSource: [$class: 'ManuallyEnteredCommitStatusContextSource', context: 'Continuous Integration'],
+                statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Build and deploy succeeded!', state: 'SUCCESS']]]
+            ])
         }
         failure {
-            githubNotify context: 'Continuous Integration', description: 'Build failed. Check Jenkins logs.', status: 'FAILURE'
+            step([$class: 'GitHubCommitStatusSetter', 
+                contextSource: [$class: 'ManuallyEnteredCommitStatusContextSource', context: 'Continuous Integration'],
+                statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Build failed. Check Jenkins logs.', state: 'FAILURE']]]
+            ])
         }
     }
 }
