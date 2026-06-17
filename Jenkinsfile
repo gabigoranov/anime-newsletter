@@ -15,7 +15,7 @@ pipeline {
                     echo "Stopping old containers, rebuilding, and starting new ones..."
                     
                     // Jenkins leverages the mounted docker.sock to run this on your host VPS
-                    sh "docker compose up -d --build"
+                    sh "docker-compose up -d --build"
                 }
             }
         }
