@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+        stage('Notify GitHub Start') {
+            steps {
+                // Sets the commit status to "Pending" on GitHub
+                setGitHubPullRequestStatus(state: 'PENDING', message: 'Jenkins is building your app...', context: 'Continuous Integration')
+            }
+        }
+
         stage('Checkout Code') {
             steps {
                 checkout scm
@@ -26,6 +33,17 @@ pipeline {
                     sh "docker image prune -f"
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            // Sends a green checkmark back to GitHub
+            setGitHubPullRequestStatus(state: 'SUCCESS', message: 'Build and deploy succeeded!', context: 'Continuous Integration')
+        }
+        failure {
+            // Sends a red X back to GitHub
+            setGitHubPullRequestStatus(state: 'FAILURE', message: 'Build failed. Check Jenkins logs.', context: 'Continuous Integration')
         }
     }
 }
