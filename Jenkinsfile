@@ -10,10 +10,14 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // By omitting -f or using the workspace copy, Jenkins reads its fresh checkout
-                // While -p anime-newsletter forces it to overwrite your exact running production stack!
-                sh "docker compose -p anime-newsletter build --no-cache frontend backend"
-                sh "docker compose -p anime-newsletter up -d frontend backend"
+                // Copy the fresh code directly into your production directory
+                sh "cp -R \${WORKSPACE}/frontend/. /var/www/anime-newsletter/frontend/"
+                sh "cp -R \${WORKSPACE}/backend/. /var/www/anime-newsletter/backend/"
+
+                // Restart the apps without touching the network. Nginx stays perfectly connected.
+                dir('/var/www/anime-newsletter') {
+                    sh "docker compose restart frontend backend"
+                }
             }
         }
     }
