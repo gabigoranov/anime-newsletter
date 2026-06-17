@@ -1,11 +1,25 @@
 pipeline {
     agent any
 
+    environment {
+        REPO_OWNER = 'gabigoranov'
+        REPO_NAME  = 'anime-newsletter'
+        // This injects your GitHub token credential safely into a variable
+        GITHUB_CREDENTIALS = credentials('github-token') 
+    }
+
     stages {
         stage('Notify GitHub Start') {
             steps {
-                // Sets the commit status to "Pending" on GitHub right at launch
-                setGitHubPullRequestStatus(state: 'PENDING', message: 'Jenkins is building your app...', context: 'Continuous Integration')
+                script {
+                    sh """
+                        curl -X POST \
+                        -H "Authorization: token ${GITHUB_CREDENTIALS}" \
+                        -H "Accept: application/vnd.github.v3+json" \
+                        https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/statuses/${GIT_COMMIT} \
+                        -d '{"state": "pending", "target_url": "${BUILD_URL}", "description": "Jenkins is building your app...", "context": "Continuous Integration"}'
+                    """
+                }
             }
         }
 
@@ -19,8 +33,6 @@ pipeline {
             steps {
                 script {
                     echo "Deploying only application containers..."
-                    
-                    // TARGET SPECIFIC SERVICES: This prevents Jenkins from trying to recreate itself!
                     sh "docker compose up -d --build backend frontend"
                 }
             }
@@ -38,12 +50,26 @@ pipeline {
 
     post {
         success {
-            // Sends a clean green checkmark back to GitHub
-            setGitHubPullRequestStatus(state: 'SUCCESS', message: 'Build and deploy succeeded!', context: 'Continuous Integration')
+            script {
+                sh """
+                    curl -X POST \
+                    -H "Authorization: token ${GITHUB_CREDENTIALS}" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/statuses/${GIT_COMMIT} \
+                    -d '{"state": "success", "target_url": "${BUILD_URL}", "description": "Build and deploy succeeded!", "context": "Continuous Integration"}'
+                """
+            }
         }
         failure {
-            // Sends a clean red X back to GitHub
-            setGitHubPullRequestStatus(state: 'FAILURE', message: 'Build failed. Check Jenkins logs.', context: 'Continuous Integration')
+            script {
+                sh """
+                    curl -X POST \
+                    -H "Authorization: token ${GITHUB_CREDENTIALS}" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/statuses/${GIT_COMMIT} \
+                    -d '{"state": "failure", "target_url": "${BUILD_URL}", "description": "Build failed. Check Jenkins logs.", "context": "Continuous Integration"}'
+                """
+            }
         }
     }
 }
