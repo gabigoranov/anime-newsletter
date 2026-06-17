@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Notify GitHub Start') {
             steps {
-                // Sets the commit status to "Pending" on GitHub
-                setGitHubPullRequestStatus(state: 'PENDING', message: 'Jenkins is building your app...', context: 'Continuous Integration')
+                // Uses the universal commit status setter
+                githubNotify context: 'Continuous Integration', description: 'Jenkins is building your app...', status: 'PENDING'
             }
         }
 
@@ -38,12 +38,10 @@ pipeline {
 
     post {
         success {
-            // Sends a green checkmark back to GitHub
-            setGitHubPullRequestStatus(state: 'SUCCESS', message: 'Build and deploy succeeded!', context: 'Continuous Integration')
+            githubNotify context: 'Continuous Integration', description: 'Build and deploy succeeded!', status: 'SUCCESS'
         }
         failure {
-            // Sends a red X back to GitHub
-            setGitHubPullRequestStatus(state: 'FAILURE', message: 'Build failed. Check Jenkins logs.', context: 'Continuous Integration')
+            githubNotify context: 'Continuous Integration', description: 'Build failed. Check Jenkins logs.', status: 'FAILURE'
         }
     }
 }
