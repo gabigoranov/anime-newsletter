@@ -34,14 +34,15 @@ pipeline {
         stage('Deploy to Docker') {
             steps {
                 script {
-                    echo "Stopping old containers and removing data volumes..."
+                    echo "Stopping old pipeline containers..."
                     sh "docker compose down -v"
 
-                    echo "Forcing a clean image build from scratch without cache..."
-                    // This flag is valid here! It forces a total rebuild of all code layers.
+                    echo "Building fresh images for both services..."
+                    // This explicitly ensures BOTH frontend and backend images compile without cache
                     sh "docker compose build --no-cache backend frontend"
 
                     echo "Starting up updated services..."
+                    // This boots up the stack together
                     sh "docker compose up -d backend frontend"
                 }
             }
