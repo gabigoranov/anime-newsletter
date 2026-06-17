@@ -34,16 +34,22 @@ pipeline {
         stage('Deploy to Docker') {
             steps {
                 script {
-                    echo "Stopping old pipeline containers..."
-                    sh "docker compose down -v"
+                    // Navigate to your true deployment home directory
+                    dir('/var/www/anime-newsletter') {
+                        
+                        echo "Pulling latest code changes into the deployment directory..."
+                        sh "git pull origin main"
 
-                    echo "Building fresh images for both services..."
-                    // This explicitly ensures BOTH frontend and backend images compile without cache
-                    sh "docker compose build --no-cache backend frontend"
+                        echo "Stopping the existing production containers to wipe data caches..."
+                        sh "docker compose down -v"
 
-                    echo "Starting up updated services..."
-                    // This boots up the stack together
-                    sh "docker compose up -d backend frontend"
+                        echo "Building fresh images directly on the production stack..."
+                        // We target the real production stack to ensure consistency
+                        sh "docker compose build --no-cache backend frontend"
+
+                        echo "Launching the updated application containers..."
+                        sh "docker compose up -d backend frontend"
+                    }
                 }
             }
         }
