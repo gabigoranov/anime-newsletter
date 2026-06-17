@@ -4,11 +4,18 @@ pipeline {
     environment {
         REPO_OWNER = 'gabigoranov'
         REPO_NAME  = 'anime-newsletter'
-        // This injects your GitHub token credential safely into a variable
         GITHUB_CREDENTIALS = credentials('github-token') 
     }
 
     stages {
+        // 1. GET THE FRESH CODE FIRST
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        // 2. NOW NOTIFY GITHUB WITH THE CORRECT GIT_COMMIT VARIABLE
         stage('Notify GitHub Start') {
             steps {
                 script {
@@ -23,17 +30,13 @@ pipeline {
             }
         }
 
-        stage('Checkout Code') {
-            steps {
-                checkout scm
-            }
-        }
-
+        // 3. FORCE REBUILD WITH FRESH CODE
         stage('Deploy to Docker') {
             steps {
                 script {
                     echo "Deploying only application containers..."
-                    sh "docker compose up -d --build backend frontend"
+                    // Added --force-recreate to guarantee your new UI layers are applied
+                    sh "docker compose up -d --force-recreate --build backend frontend"
                 }
             }
         }
