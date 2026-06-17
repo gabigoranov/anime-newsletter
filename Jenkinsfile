@@ -4,11 +4,8 @@ pipeline {
     stages {
         stage('Notify GitHub Start') {
             steps {
-                // Native Jenkins GitHub status setter
-                step([$class: 'GitHubCommitStatusSetter', 
-                    contextSource: [$class: 'ManuallyEnteredCommitStatusContextSource', context: 'Continuous Integration'],
-                    statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Jenkins is building your app...', state: 'PENDING']]]
-                ])
+                // Sets the commit status to "Pending" on GitHub right at launch
+                setGitHubPullRequestStatus(state: 'PENDING', message: 'Jenkins is building your app...', context: 'Continuous Integration')
             }
         }
 
@@ -22,6 +19,8 @@ pipeline {
             steps {
                 script {
                     echo "Deploying only application containers..."
+                    
+                    // TARGET SPECIFIC SERVICES: This prevents Jenkins from trying to recreate itself!
                     sh "docker compose up -d --build backend frontend"
                 }
             }
@@ -39,16 +38,12 @@ pipeline {
 
     post {
         success {
-            step([$class: 'GitHubCommitStatusSetter', 
-                contextSource: [$class: 'ManuallyEnteredCommitStatusContextSource', context: 'Continuous Integration'],
-                statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Build and deploy succeeded!', state: 'SUCCESS']]]
-            ])
+            // Sends a clean green checkmark back to GitHub
+            setGitHubPullRequestStatus(state: 'SUCCESS', message: 'Build and deploy succeeded!', context: 'Continuous Integration')
         }
         failure {
-            step([$class: 'GitHubCommitStatusSetter', 
-                contextSource: [$class: 'ManuallyEnteredCommitStatusContextSource', context: 'Continuous Integration'],
-                statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Build failed. Check Jenkins logs.', state: 'FAILURE']]]
-            ])
+            // Sends a clean red X back to GitHub
+            setGitHubPullRequestStatus(state: 'FAILURE', message: 'Build failed. Check Jenkins logs.', context: 'Continuous Integration')
         }
     }
 }
