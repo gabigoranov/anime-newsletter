@@ -55,6 +55,7 @@ services:
   frontend:
     build:
       context: ./frontend # Tells Docker where to find the frontend Dockerfile
+      dockerfile: Dockerfile
     depends_on:
       - backend # Tells the frontend to wait nicely for the backend to wake up first
     networks:

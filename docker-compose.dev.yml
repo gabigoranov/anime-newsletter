@@ -55,6 +55,7 @@ services:
   frontend:
     build:
       context: ./frontend # Tells Docker where to find the frontend Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - ./frontend:/app
       - /app/node_modules # This keeps the heavy Node tools safely inside the box so they don't clutter your computer.
@@ -63,4 +64,6 @@ services:
     networks:
       web_network:
         aliases:
-          - frontend
+          - frontend  
+    ports:
+      - "5173:5173"      
