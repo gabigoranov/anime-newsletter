@@ -38,7 +38,7 @@ export default function Hero() {
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-6/7 mx-auto md:mx-0">
             Never miss an episode. Sync your MyAnimeList account and receive
             hourly updates, breaking anime news, release alerts, and AI-powered
-            summaries—all for free.
+            summaries—all for free. This is atest?
           </p>
 
           <form
