@@ -4,13 +4,12 @@ pipeline {
     stages {
         stage('Deploy') {
             steps {
-                dir('/var/www/anime-newsletter') {
-                    sh '''
-                        git fetch origin
-                        git reset --hard origin/main
-                        docker compose up -d --build backend frontend
-                    '''
-                }
+                sh '''
+                    cd /var/www/anime-newsletter
+                    git fetch origin
+                    git reset --hard origin/main
+                    docker compose up -d --build frontend backend
+                '''
             }
         }
     }
