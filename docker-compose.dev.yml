@@ -55,6 +55,9 @@ services:
   frontend:
     build:
       context: ./frontend # Tells Docker where to find the frontend Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # This keeps the heavy Node tools safely inside the box so they don't clutter your computer.
     depends_on:
       - backend # Tells the frontend to wait nicely for the backend to wake up first
     networks:
