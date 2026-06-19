@@ -1,15 +1,16 @@
-# 1. Get our Node.js toolbox
 FROM node:20
+
 WORKDIR /app
 
-# 2. Install ingredients
-COPY package.json package-lock.json ./
-RUN npm install
+COPY package*.json ./
+RUN npm ci
 
-# 3. We DO NOT copy the rest of the code here, because we will use a Volume instead!
+COPY . .
 
-# 4. Expose the default Vite port
-EXPOSE 5173
+RUN npm run build
 
-# 5. Run Vite! (The --host flag is required so Docker lets your browser see it)
-CMD ["npm", "run", "dev", "--", "--host"]
+RUN npm install -g serve
+
+EXPOSE 3000
+
+CMD ["serve", "-s", "dist", "-l", "3000"]
